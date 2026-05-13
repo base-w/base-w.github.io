@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BASE — The AI-Native Infrastructure for IPs and Creators</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg width='180' height='180' viewBox='0 0 180 180' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='180' height='180' rx='40' fill='%236ABF5F'/><text x='90' y='132' text-anchor='middle' font-family='Arial' font-weight='800' font-size='112' fill='black'>B</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+--black: #080808;
+--surface: #111111;
+--surface2: #181818;
+--surface3: #1f1f1f;
+--border: #282828;
+--border2: #333333;
+--text: #ffffff;
+--text2: #a0a0a0;
+--text3: #606060;
+--green: #4ade80;
+--green-dark: #16a34a;
+--green-dim: rgba(74,222,128,0.12);
+--green-dim2: rgba(74,222,128,0.06);
+--font-display: 'Space Grotesk', sans-serif;
+--font-body: 'Space Grotesk', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+background: var(--black);
+color: var(--text);
+font-family: var(--font-body);
+font-size: 16px;
+line-height: 1.6;
+overflow-x: hidden;
+overflow-y: auto;
+-webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 40px;
+height: 64px;
+background: rgba(8,8,8,0.85);
+backdrop-filter: blur(16px);
+border-bottom: 1px solid rgba(255,255,255,0.05);
+opacity: 0;
+}
+
+.nav-logo {
+display: flex;
+align-items: center;
+gap: 10px;
+text-decoration: none;
+}
+
+.nav-logo-mark {
+width: 32px; height: 32px;
+border-radius: 8px;
+flex-shrink: 0;
+overflow: hidden;
+display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark svg { width: 32px; height: 32px; display: block; }
+
+.nav-logo-text {
+font-family: var(--font-display);
+font-weight: 700;
+font-size: 18px;
+color: var(--text);
+letter-spacing: -0.02em;
+}
+
+.nav-links {
+display: flex;
+gap: 32px;
+list-style: none;
+}
+
+.nav-links a {
+color: var(--text2);
+text-decoration: none;
+font-size: 14px;
+font-weight: 400;
+transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+display: flex;
+gap: 12px;
+align-items: center;
+}
+
+.btn {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 10px 20px;
+border-radius: 8px;
+font-family: var(--font-body);
+font-size: 14px;
+font-weight: 500;
+text-decoration: none;
+cursor: pointer;
+transition: all 0.2s;
+border: none;
+}
+
+.btn-ghost {
+background: transparent;
+color: var(--text2);
+border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+color: var(--text);
+border-color: var(--border2);
+background: var(--surface);
+}
+
+.btn-primary {
+background: var(--green);
+color: #000;
+font-weight: 600;
+}
+
+.btn-primary:hover {
+background: #6ee79a;
+transform: translateY(-1px);
+}
+
+.btn-large {
+padding: 14px 28px;
+font-size: 15px;
+border-radius: 10px;
+}
+
+/* ── HERO CINEMATIC ── */
+.hero {
+position: relative;
+width: 100%;
+height: 100vh;
+min-height: 700px;
+max-height: 100vh;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+}
+
+.hero-media {
+position: absolute;
+inset: 0;
+z-index: 0;
+}
+
+.hero-cover {
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center 20%;
+display: block;
+}
+
+.hero-video-bg {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center;
+display: none;
+}
+
+/* layered overlay: vignette bottom + top + subtle color grade */
+.hero-overlay {
+position: absolute;
+inset: 0;
+z-index: 1;
+background:
+linear-gradient(to top, rgba(8,8,8,1) 0%, rgba(8,8,8,0.7) 30%, rgba(8,8,8,0.1) 60%, rgba(8,8,8,0.35) 100%);
+}
+
+/* film grain via SVG noise */
+.hero-grain {
+position: absolute;
+inset: 0;
+z-index: 2;
+opacity: 0.04;
+background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+background-size: 200px 200px;
+pointer-events: none;
+}
+
+.hero-content {
+position: relative;
+z-index: 3;
+padding: 0 64px 72px;
+max-width: 1200px;
+width: 100%;
+}
+
+.hero-badge {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: rgba(0,0,0,0.4);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(74,222,128,0.3);
+border-radius: 100px;
+padding: 6px 16px;
+font-size: 11px;
+font-weight: 600;
+color: var(--green);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-bottom: 24px;
+}
+
+.hero-badge-dot {
+width: 6px; height: 6px;
+background: var(--green);
+border-radius: 50%;
+animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero h1 {
+font-family: var(--font-display);
+font-weight: 700;
+font-size: clamp(44px, 6.5vw, 84px);
+line-height: 1.0;
+letter-spacing: -0.03em;
+color: #fff;
+max-width: 760px;
+margin-bottom: 20px;
+text-shadow: 0 2px 40px rgba(0,0,0,0.5);
+}
+
+.hero h1 em {
+font-style: normal;
+color: var(--green);
+}
+
+.hero-tagline {
+font-size: 16px;
+font-weight: 400;
+color: rgba(255,255,255,0.6);
+letter-spacing: 0.02em;
+margin-bottom: 36px;
+max-width: 480px;
+}
+
+.hero-actions {
+display: flex;
+gap: 12px;
+align-items: center;
+flex-wrap: wrap;
+margin-bottom: 48px;
+}
+
+.hero-tagwords {
+display: flex;
+gap: 8px;
+align-items: center;
+}
+
+.hero-tagword {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: rgba(255,255,255,0.3);
+}
+
+.hero-tagword-sep {
+width: 1px;
+height: 12px;
+background: rgba(255,255,255,0.15);
+}
+
+/* sound toggle — bottom right corner */
+.hero-sound {
+position: absolute;
+bottom: 72px;
+right: 64px;
+z-index: 4;
+width: 44px; height: 44px;
+background: rgba(0,0,0,0.5);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255,255,255,0.12);
+border-radius: 50%;
+display: none;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.hero-sound:hover {
+border-color: rgba(255,255,255,0.3);
+background: rgba(0,0,0,0.7);
+}
+
+.hero-sound svg {
+width: 18px; height: 18px;
+fill: rgba(255,255,255,0.7);
+}
+
+/* play-with-sound pill — subtle, bottom right */
+.hero-play-pill {
+position: absolute;
+bottom: 72px;
+right: 64px;
+z-index: 4;
+display: flex;
+align-items: center;
+gap: 8px;
+background: rgba(0,0,0,0.5);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255,255,255,0.12);
+border-radius: 100px;
+padding: 10px 18px 10px 12px;
+cursor: pointer;
+transition: all 0.2s;
+font-size: 12px;
+font-weight: 500;
+color: rgba(255,255,255,0.7);
+font-family: var(--font-body);
+}
+
+.hero-play-pill:hover {
+border-color: rgba(74,222,128,0.4);
+color: #fff;
+}
+
+.hero-play-pill-icon {
+width: 28px; height: 28px;
+background: var(--green);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+}
+
+.hero-play-pill-icon svg {
+width: 12px; height: 12px;
+fill: #000;
+margin-left: 2px;
+}
+
+@media (max-width: 900px) {
+.hero-content { padding: 0 24px 48px; }
+.hero-play-pill { right: 24px; bottom: 48px; }
+}
+
+/* ── STATS ── */
+.stats-strip {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+border-top: 1px solid var(--border);
+border-bottom: 1px solid var(--border);
+margin: 0;
+}
+
+.stat-item {
+padding: 40px 40px;
+border-right: 1px solid var(--border);
+position: relative;
+overflow: hidden;
+}
+
+.stat-item:last-child { border-right: none; }
+
+.stat-item::before {
+content: '';
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 2px;
+background: transparent;
+transition: background 0.3s;
+}
+
+.stat-item:hover::before {
+background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+
+.stat-number {
+font-family: var(--font-display);
+font-size: 40px;
+font-weight: 800;
+color: var(--text);
+letter-spacing: -0.03em;
+line-height: 1;
+margin-bottom: 8px;
+}
+
+.stat-number span {
+color: var(--green);
+}
+
+.stat-label {
+font-size: 14px;
+color: var(--text2);
+font-weight: 400;
+}
+
+.stat-sub {
+font-size: 12px;
+color: var(--text3);
+margin-top: 4px;
+}
+
+/* ── SECTION ── */
+section {
+padding: 120px 40px;
+max-width: 1200px;
+margin: 0 auto;
+}
+
+.section-label {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--green);
+margin-bottom: 16px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.section-label::before {
+content: '';
+width: 20px; height: 1px;
+background: var(--green);
+}
+
+.section-title {
+font-family: var(--font-display);
+font-weight: 800;
+font-size: clamp(32px, 4vw, 52px);
+letter-spacing: -0.03em;
+line-height: 1.05;
+color: var(--text);
+max-width: 700px;
+margin-bottom: 20px;
+}
+
+.section-title em {
+font-style: normal;
+color: var(--green);
+}
+
+.section-subtitle {
+font-size: 17px;
+color: var(--text2);
+font-weight: 300;
+max-width: 560px;
+line-height: 1.7;
+margin-bottom: 60px;
+}
+
+/* ── LOOP ── */
+.loop-grid {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 2px;
+}
+
+.loop-item {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 32px 24px;
+position: relative;
+overflow: hidden;
+transition: border-color 0.3s, background 0.3s;
+cursor: default;
+}
+
+.loop-item:hover {
+border-color: rgba(74,222,128,0.3);
+background: var(--surface2);
+}
+
+.loop-item::after {
+content: attr(data-n);
+position: absolute;
+top: 16px; right: 20px;
+font-family: var(--font-display);
+font-size: 48px;
+font-weight: 800;
+color: rgba(255,255,255,0.03);
+line-height: 1;
+pointer-events: none;
+}
+
+.loop-icon {
+width: 40px; height: 40px;
+background: var(--green-dim);
+border: 1px solid rgba(74,222,128,0.2);
+border-radius: 10px;
+display: flex; align-items: center; justify-content: center;
+margin-bottom: 20px;
+font-size: 18px;
+}
+
+.loop-item h3 {
+font-family: var(--font-display);
+font-weight: 700;
+font-size: 16px;
+color: var(--text);
+margin-bottom: 8px;
+letter-spacing: -0.01em;
+}
+
+.loop-item p {
+font-size: 13px;
+color: var(--text2);
+line-height: 1.6;
+font-weight: 300;
+}
+
+/* ── ENGINES ── */
+.engines-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+}
+
+.engine-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 40px 36px;
+position: relative;
+overflow: hidden;
+transition: all 0.3s;
+}
+
+.engine-card:hover {
+border-color: rgba(74,222,128,0.25);
+transform: translateY(-2px);
+}
+
+.engine-card::before {
+content: '';
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(74,222,128,0.04) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.engine-tag {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: var(--green-dim2);
+border: 1px solid rgba(74,222,128,0.15);
+border-radius: 100px;
+padding: 4px 12px;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(--green);
+margin-bottom: 24px;
+}
+
+.engine-card h3 {
+font-family: var(--font-display);
+font-weight: 800;
+font-size: 28px;
+letter-spacing: -0.02em;
+color: var(--text);
+margin-bottom: 12px;
+}
+
+.engine-card p {
+font-size: 15px;
+color: var(--text2);
+line-height: 1.65;
+font-weight: 300;
+margin-bottom: 32px;
+}
+
+.engine-features {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.engine-feature {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 13px;
+color: var(--text2);
+}
+
+.engine-feature-dot {
+width: 5px; height: 5px;
+background: var(--green);
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+/* ── SCREENS ── */
+.screens-wrapper {
+overflow: hidden;
+margin: 0 -40px;
+padding: 0 40px;
+}
+
+.screens-scroll {
+display: flex;
+gap: 16px;
+overflow-x: auto;
+padding-bottom: 20px;
+scrollbar-width: none;
+}
+
+.screens-scroll::-webkit-scrollbar { display: none; }
+
+.screen-card {
+flex-shrink: 0;
+width: 320px;
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 12px;
+overflow: hidden;
+}
+
+.screen-card-img {
+width: 100%;
+aspect-ratio: 16/10;
+background: var(--surface2);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 13px;
+color: var(--text3);
+font-style: italic;
+}
+
+.screen-card-info {
+padding: 16px 20px;
+}
+
+.screen-card-title {
+font-size: 14px;
+font-weight: 500;
+color: var(--text);
+margin-bottom: 4px;
+}
+
+.screen-card-sub {
+font-size: 12px;
+color: var(--text3);
+}
+
+/* ── PRODUCT SCREENS ── */
+.product-row {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2px;
+margin-bottom: 2px;
+}
+
+.product-screen {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 16px;
+overflow: hidden;
+position: relative;
+}
+
+.product-screen-large {
+grid-column: span 2;
+}
+
+.product-screen-img {
+width: 100%;
+background: var(--surface2);
+aspect-ratio: 16/9;
+display: flex;
+align-items: flex-end;
+padding: 20px;
+position: relative;
+overflow: hidden;
+}
+
+.product-screen-badge {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: rgba(0,0,0,0.7);
+backdrop-filter: blur(8px);
+border: 1px solid var(--border);
+border-radius: 100px;
+padding: 6px 14px;
+font-size: 12px;
+color: var(--text);
+font-weight: 500;
+}
+
+.product-screen-badge-dot {
+width: 6px; height: 6px;
+background: var(--green);
+border-radius: 50%;
+}
+
+/* ── TRACTION ── */
+.traction-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+}
+
+.traction-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 36px 32px;
+transition: all 0.3s;
+}
+
+.traction-card:hover {
+border-color: var(--border2);
+background: var(--surface2);
+}
+
+.traction-card-header {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 24px;
+}
+
+.traction-icon {
+width: 44px; height: 44px;
+background: var(--green-dim);
+border: 1px solid rgba(74,222,128,0.2);
+border-radius: 12px;
+display: flex; align-items: center; justify-content: center;
+font-size: 20px;
+}
+
+.traction-label {
+font-size: 12px;
+color: var(--text3);
+text-transform: uppercase;
+letter-spacing: 0.08em;
+font-weight: 500;
+display: block;
+margin-bottom: 2px;
+}
+
+.traction-name {
+font-size: 15px;
+font-weight: 500;
+color: var(--text);
+}
+
+.traction-number {
+font-family: var(--font-display);
+font-size: 44px;
+font-weight: 800;
+color: var(--text);
+letter-spacing: -0.03em;
+line-height: 1;
+margin-bottom: 8px;
+}
+
+.traction-number span { color: var(--green); }
+
+.traction-desc {
+font-size: 14px;
+color: var(--text2);
+line-height: 1.6;
+font-weight: 300;
+}
+
+/* ── TEAM ── */
+.team-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+}
+
+.team-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 36px 32px;
+transition: all 0.3s;
+}
+
+.team-card:hover {
+border-color: rgba(74,222,128,0.2);
+}
+
+.team-avatar {
+width: 56px; height: 56px;
+background: var(--green-dim);
+border: 1px solid rgba(74,222,128,0.25);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-family: var(--font-display);
+font-weight: 700;
+font-size: 20px;
+color: var(--green);
+margin-bottom: 20px;
+}
+
+.team-card h3 {
+font-family: var(--font-display);
+font-weight: 700;
+font-size: 20px;
+color: var(--text);
+letter-spacing: -0.01em;
+margin-bottom: 4px;
+}
+
+.team-role {
+font-size: 13px;
+color: var(--green);
+font-weight: 500;
+margin-bottom: 16px;
+}
+
+.team-bio {
+font-size: 14px;
+color: var(--text2);
+line-height: 1.65;
+font-weight: 300;
+}
+
+/* ── INVESTMENT ── */
+.investment-block {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2px;
+}
+
+.invest-left {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 56px 48px;
+}
+
+.invest-right {
+background: var(--green-dim2);
+border: 1px solid rgba(74,222,128,0.15);
+border-radius: 16px;
+padding: 56px 48px;
+display: flex;
+flex-direction: column;
+gap: 32px;
+}
+
+.invest-metric {
+border-bottom: 1px solid var(--border);
+padding-bottom: 24px;
+margin-bottom: 24px;
+}
+
+.invest-metric:last-child {
+border-bottom: none;
+padding-bottom: 0;
+margin-bottom: 0;
+}
+
+.invest-metric-label {
+font-size: 12px;
+color: var(--text3);
+text-transform: uppercase;
+letter-spacing: 0.08em;
+margin-bottom: 6px;
+}
+
+.invest-metric-value {
+font-family: var(--font-display);
+font-size: 32px;
+font-weight: 800;
+color: var(--text);
+letter-spacing: -0.02em;
+margin-bottom: 4px;
+}
+
+.invest-metric-sub {
+font-size: 13px;
+color: var(--text2);
+}
+
+.invest-highlight {
+background: var(--green-dim);
+border: 1px solid rgba(74,222,128,0.2);
+border-radius: 12px;
+padding: 20px 24px;
+}
+
+.invest-highlight-label {
+font-size: 11px;
+color: var(--green);
+text-transform: uppercase;
+letter-spacing: 0.1em;
+font-weight: 600;
+margin-bottom: 8px;
+}
+
+.invest-highlight-text {
+font-size: 15px;
+color: var(--text);
+font-weight: 500;
+line-height: 1.5;
+}
+
+/* ── ROADMAP ── */
+.roadmap-timeline {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 2px;
+position: relative;
+}
+
+.roadmap-item {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 28px 24px;
+position: relative;
+}
+
+.roadmap-item.active {
+border-color: rgba(74,222,128,0.3);
+background: var(--surface2);
+}
+
+.roadmap-item.active::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: var(--green);
+border-radius: 12px 12px 0 0;
+}
+
+.roadmap-period {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--text3);
+margin-bottom: 16px;
+}
+
+.roadmap-item.active .roadmap-period {
+color: var(--green);
+}
+
+.roadmap-item h4 {
+font-family: var(--font-display);
+font-weight: 700;
+font-size: 15px;
+color: var(--text);
+margin-bottom: 12px;
+}
+
+.roadmap-milestones {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.roadmap-milestone {
+display: flex;
+align-items: flex-start;
+gap: 8px;
+font-size: 13px;
+color: var(--text2);
+}
+
+.roadmap-milestone::before {
+content: '·';
+color: var(--text3);
+flex-shrink: 0;
+margin-top: 1px;
+}
+
+/* ── CTA FINAL ── */
+.cta-section {
+padding: 120px 40px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+.cta-bg {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(74,222,128,0.06) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.cta-section h2 {
+font-family: var(--font-display);
+font-weight: 800;
+font-size: clamp(36px, 5vw, 64px);
+letter-spacing: -0.03em;
+color: var(--text);
+margin-bottom: 20px;
+position: relative;
+}
+
+.cta-section h2 em {
+font-style: normal;
+color: var(--green);
+}
+
+.cta-section p {
+font-size: 18px;
+color: var(--text2);
+max-width: 480px;
+margin: 0 auto 48px;
+font-weight: 300;
+line-height: 1.7;
+position: relative;
+}
+
+.cta-actions {
+display: flex;
+gap: 16px;
+justify-content: center;
+align-items: center;
+flex-wrap: wrap;
+position: relative;
+}
+
+.cta-note {
+margin-top: 72px;
+font-size: 13px;
+color: var(--text3);
+letter-spacing: 0.04em;
+white-space: nowrap;
+}
+
+/* ── FOOTER ── */
+footer {
+border-top: 1px solid var(--border);
+padding: 48px 40px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+max-width: 1200px;
+margin: 0 auto;
+}
+
+.footer-left {
+display: flex;
+align-items: center;
+gap: 24px;
+}
+
+.footer-copy {
+font-size: 13px;
+color: var(--text3);
+}
+
+.footer-links {
+display: flex;
+gap: 24px;
+}
+
+.footer-links a {
+font-size: 13px;
+color: var(--text3);
+text-decoration: none;
+transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--text2); }
+
+/* ── DIVIDER ── */
+.full-divider {
+width: 100%;
+height: 1px;
+background: var(--border);
+}
+
+/* ── LANG SWITCHER ── */
+.lang-btn {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 6px;
+padding: 6px 12px;
+font-size: 12px;
+font-weight: 500;
+color: var(--text2);
+cursor: pointer;
+transition: all 0.2s;
+font-family: var(--font-body);
+}
+
+.lang-btn:hover {
+border-color: var(--border2);
+color: var(--text);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(24px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+nav { padding: 0 20px; }
+.nav-links { display: none; }
+.hero { padding: 100px 20px 60px; }
+section { padding: 80px 20px; }
+.stats-strip { grid-template-columns: repeat(2, 1fr); }
+.loop-grid { grid-template-columns: repeat(2, 1fr); }
+.engines-grid { grid-template-columns: 1fr; }
+.traction-grid { grid-template-columns: repeat(2, 1fr); }
+.team-grid { grid-template-columns: 1fr; }
+.investment-block { grid-template-columns: 1fr; }
+.roadmap-timeline { grid-template-columns: repeat(2, 1fr); }
+.product-row { grid-template-columns: 1fr; }
+.product-screen-large { grid-column: span 1; }
+footer { flex-direction: column; gap: 24px; text-align: center; }
+.video-section { padding: 0 20px 80px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-mark"><svg width="32" height="32" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="180" rx="40" fill="#6ABF5F"/><text x="90" y="132" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="112" fill="black">B</text></svg></div>
+    <span class="nav-logo-text">BASE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#product" data-i18n="nav-product">Product</a></li>
+    <li><a href="#traction" data-i18n="nav-traction">Traction</a></li>
+    <li><a href="#team" data-i18n="nav-team">Team</a></li>
+    <li><a href="#invest" data-i18n="nav-invest">Invest</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="lang-btn" id="langToggle">PT →</button>
+    <a href="#invest" class="btn btn-ghost" data-i18n="nav-deck">View deck</a>
+    <a href="#cta" class="btn btn-primary" data-i18n="nav-cta">Get in touch</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-media">
+    <img class="hero-cover" src="creator-luna-vex-cover.jpg" alt="" id="heroCover" />
+    <video class="hero-video-bg" id="heroBgVideo" autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/djl3qvhrq/video/upload/v1778678637/Base_V6_vvv3aa.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-grain"></div>
+
+  <div class="hero-content" id="heroContent">
+    <div class="hero-badge fade-up">
+      <div class="hero-badge-dot"></div>
+      AI-Native · Creator Tech · Web Summit Rio 2026
+    </div>
+
+    <h1 class="fade-up delay-1">
+      The global <em>Amazon</em><br/>for creators & IPs.
+    </h1>
+
+    <p class="hero-tagline fade-up delay-2">
+      The AI-Native Infrastructure for IPs and Creators
+    </p>
+
+    <div class="hero-actions fade-up delay-3">
+      <a href="#cta" class="btn btn-primary btn-large" data-i18n="hero-cta1">Request access</a>
+      <a href="#invest" class="btn btn-ghost btn-large" data-i18n="hero-cta2">Investor deck →</a>
+    </div>
+
+    <div class="hero-tagwords fade-up delay-4">
+      <span class="hero-tagword">Create</span>
+      <div class="hero-tagword-sep"></div>
+      <span class="hero-tagword">Fund</span>
+      <div class="hero-tagword-sep"></div>
+      <span class="hero-tagword">Play</span>
+      <div class="hero-tagword-sep"></div>
+      <span class="hero-tagword">Expand</span>
+    </div>
+  </div>
+
+  <button class="hero-play-pill" id="playPill" style="display:none;">
+    <div class="hero-play-pill-icon">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <span id="pillText">Watch with sound</span>
+  </button>
+</div>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-number">10K<span>+</span></div>
+    <div class="stat-label" data-i18n="stat1-label">Registered creators</div>
+    <div class="stat-sub" data-i18n="stat1-sub">on Funktoon today</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">3M<span>+</span></div>
+    <div class="stat-label" data-i18n="stat2-label">Monthly visits</div>
+    <div class="stat-sub" data-i18n="stat2-sub">organic, no paid acquisition</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">3</div>
+    <div class="stat-label" data-i18n="stat3-label">Content engines</div>
+    <div class="stat-sub">Bunker · Funktoon · RPG</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">R$70M</div>
+    <div class="stat-label" data-i18n="stat4-label">Post-money valuation</div>
+    <div class="stat-sub" data-i18n="stat4-sub">Seed round · R$7M / 10%</div>
+  </div>
+</div>
+
+<!-- PRODUCT -->
+<section id="product">
+  <div class="section-label" data-i18n="s-platform">Platform</div>
+  <h2 class="section-title" data-i18n="s-platform-title">One ecosystem.<br/><em>Every format.</em></h2>
+  <p class="section-subtitle">
+    From a comic crowdfunding campaign to a game sold through the Bunker launcher — BASE connects every step of an IP's lifecycle in a single infrastructure.
+  </p>
+
+  <!-- LOOP -->
+  <div class="loop-grid">
+    <div class="loop-item" data-n="01">
+      <div class="loop-icon">✦</div>
+      <h3>Create</h3>
+      <p>Build your universe. Characters, lore, artbooks, comics, game concepts — all managed as structured IP objects.</p>
+    </div>
+    <div class="loop-item" data-n="02">
+      <div class="loop-icon">⚡</div>
+      <h3>Match</h3>
+      <p>AI-powered matching connects creators with collaborators, publishers, investors, and studios based on your IP's potential.</p>
+    </div>
+    <div class="loop-item" data-n="03">
+      <div class="loop-icon">◈</div>
+      <h3>Fund</h3>
+      <p>Run crowdfunding campaigns with rewards, stretch goals, add-ons, and community tools built for creators.</p>
+    </div>
+    <div class="loop-item" data-n="04">
+      <div class="loop-icon">▶</div>
+      <h3>Play</h3>
+      <p>Distribute indie games through Bunker — the dedicated launcher with 15% take rate. Half of Steam, full stack of BASE.</p>
+    </div>
+    <div class="loop-item" data-n="05">
+      <div class="loop-icon">∞</div>
+      <h3>Expand</h3>
+      <p>Every project feeds the IP graph. Comics become games. Games become universes. Universes become franchises.</p>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- ENGINES -->
+<section>
+  <div class="section-label" data-i18n="s-engines">Three engines</div>
+  <h2 class="section-title" data-i18n="s-engines-title">Built for the<br/><em>creator economy.</em></h2>
+  <p class="section-subtitle">
+    Three engines that make BASE defensible — Match brings the right people together, Ranking drives discovery, Marketplace is where revenue happens.
+  </p>
+
+  <div class="engines-grid">
+    <div class="engine-card">
+      <div class="engine-tag">⚡ Engine 01</div>
+      <h3>Match</h3>
+      <p>Connect your IP with the right people. BASE's AI matchmaking surfaces collaborators, studios, investors, and publishers based on creative fit — not just skill tags.</p>
+      <div class="engine-features">
+        <div class="engine-feature"><div class="engine-feature-dot"></div>AI recommendations by IP DNA</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Collaborators, studios, investors</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Revenue share + paid + barter</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Active listings & proposals</div>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-tag">📡 Engine 02</div>
+      <h3>Ranking</h3>
+      <p>Know what's moving. Pulse tracks traction across creators, IPs, campaigns, and games in real time — making BASE itself the discovery engine, no algorithm dependency.</p>
+      <div class="engine-features">
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Live momentum scores cross-category</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Editorial discovery without SEO</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Creators, IPs, campaigns, games</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Daily + weekly trend signals</div>
+      </div>
+    </div>
+    <div class="engine-card">
+      <div class="engine-tag">🛒 Engine 03</div>
+      <h3>Marketplace</h3>
+      <p>One commerce stack for every format. Crowdfunding, digital store, game distribution, collectibles, add-ons, and subscriptions — all under one financial layer with multi-currency rails.</p>
+      <div class="engine-features">
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Crowdfunding + store + games + add-ons</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Bunker · Funktoon · RPG · Gallery</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Multi-currency · 8–15% take rate</div>
+        <div class="engine-feature"><div class="engine-feature-dot"></div>Physical + digital + licensing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- TRACTION -->
+<section id="traction">
+  <div class="section-label" data-i18n="s-traction">Traction</div>
+  <h2 class="section-title" data-i18n="s-traction-title">Real product,<br/><em>real numbers.</em></h2>
+  <p class="section-subtitle">
+    BASE isn't a pitch deck. The platform is live, the creators are active, and the infrastructure is operating.
+  </p>
+
+  <div class="traction-grid">
+    <div class="traction-card">
+      <div class="traction-card-header">
+        <div class="traction-icon">👥</div>
+        <div>
+          <span class="traction-label">Community</span>
+          <span class="traction-name">Active creators</span>
+        </div>
+      </div>
+      <div class="traction-number">10K<span>+</span></div>
+      <div class="traction-desc">Registered creators on Funktoon, with thousands of active authors publishing regularly.</div>
+    </div>
+    <div class="traction-card">
+      <div class="traction-card-header">
+        <div class="traction-icon">📈</div>
+        <div>
+          <span class="traction-label">Traffic</span>
+          <span class="traction-name">Monthly visits</span>
+        </div>
+      </div>
+      <div class="traction-number">3M<span>+</span></div>
+      <div class="traction-desc">Monthly visits to the platform — all organic, no paid acquisition. Strong SEO foundation and creator-driven growth.</div>
+    </div>
+    <div class="traction-card">
+      <div class="traction-card-header">
+        <div class="traction-icon">🎬</div>
+        <div>
+          <span class="traction-label">IP Portfolio</span>
+          <span class="traction-name">IPs in market</span>
+        </div>
+      </div>
+      <div class="traction-number">20<span>+</span></div>
+      <div class="traction-desc">Original IPs in market across comics and film — including Sangue Quente, Os Desviantes, Santo, and Pérola, with international distribution.</div>
+    </div>
+    <div class="traction-card">
+      <div class="traction-card-header">
+        <div class="traction-icon">🏆</div>
+        <div>
+          <span class="traction-label">Recognition</span>
+          <span class="traction-name">Industry awards</span>
+        </div>
+      </div>
+      <div class="traction-number">2022</div>
+      <div class="traction-desc">HQMix Best National Publisher — the leading Brazilian comics award. Team has editorial credibility from day one.</div>
+    </div>
+    <div class="traction-card">
+      <div class="traction-card-header">
+        <div class="traction-icon">🎯</div>
+        <div>
+          <span class="traction-label">Event</span>
+          <span class="traction-name">Web Summit Rio 2026</span>
+        </div>
+      </div>
+      <div class="traction-number">Beta</div>
+      <div class="traction-desc">Selected as Beta Startup for Web Summit Rio 2026. Launch window aligned with V1 release across all three engines.</div>
+    </div>
+    <div class="traction-card">
+      <div class="traction-card-header">
+        <div class="traction-icon">💰</div>
+        <div>
+          <span class="traction-label">Revenue</span>
+          <span class="traction-name">2028 projection</span>
+        </div>
+      </div>
+      <div class="traction-number">R$22M<span>+</span></div>
+      <div class="traction-desc">Conservative scenario projection for 2028. Base case R$44M. Upside R$70M — validated by five-method triangulation.</div>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-label" data-i18n="s-team">Team</div>
+  <h2 class="section-title" data-i18n="s-team-title">Built by people<br/><em>who've done it.</em></h2>
+  <p class="section-subtitle">
+    Cinema, streaming, publishing, and software engineering — the founding team brings operational experience across every vertical BASE operates in.
+  </p>
+
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar">GW</div>
+      <h3>Gabriel Wainer</h3>
+      <div class="team-role">CEO & Founder</div>
+      <p class="team-bio">Executive Director at Downtown Filmes. Founder of Guará studio and Funktoon, co-founder of Aquarius. Comics portfolio includes Sangue Quente, Os Desviantes, Santo, and Pérola. HQMix 2022 Best National Publisher.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">FL</div>
+      <h3>Fernando Leôncio</h3>
+      <div class="team-role">CTO</div>
+      <p class="team-bio">Principal Software Engineer specializing in multi-platform architecture across Web, Mobile, and TV. Leading scalable systems and AI infrastructure for BASE — the full technical stack from Next.js to GCP Cloud SQL.</p>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">PC</div>
+      <h3>Pedro Curi</h3>
+      <div class="team-role">VP & Co-founder</div>
+      <p class="team-bio">Film producer and co-founder of Funktoon and BASE. Brings production experience and creative IP development expertise to the platform's content strategy and creator acquisition.</p>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- INVESTMENT -->
+<section id="invest">
+  <div class="section-label" data-i18n="s-invest">Seed Round</div>
+  <h2 class="section-title" data-i18n="s-invest-title">A platform at<br/><em>inflection point.</em></h2>
+  <p class="section-subtitle">
+    The infrastructure is built. The creators are here. The market is ready. We're raising to accelerate distribution, AI features, and global expansion.
+  </p>
+
+  <div class="investment-block">
+    <div class="invest-left">
+      <div class="invest-metric">
+        <div class="invest-metric-label">Raising</div>
+        <div class="invest-metric-value">R$ 7M</div>
+        <div class="invest-metric-sub">Seed round — 10% equity</div>
+      </div>
+      <div class="invest-metric">
+        <div class="invest-metric-label">Post-money valuation</div>
+        <div class="invest-metric-value">R$ 70M</div>
+        <div class="invest-metric-sub">Five-method triangulation validated</div>
+      </div>
+      <div class="invest-metric">
+        <div class="invest-metric-label">Revenue projections (2028)</div>
+        <div class="invest-metric-value">R$22M–70M</div>
+        <div class="invest-metric-sub">Conservative → Upside scenarios</div>
+      </div>
+      <div class="invest-metric">
+        <div class="invest-metric-label">V1 Launch</div>
+        <div class="invest-metric-value">Aug 2026</div>
+        <div class="invest-metric-sub">All three engines simultaneously</div>
+      </div>
+    </div>
+    <div class="invest-right">
+      <div class="invest-highlight">
+        <div class="invest-highlight-label">Use of funds</div>
+        <div class="invest-highlight-text">AI feature layer (recommendations, campaign assistant, viability scoring) · Bunker desktop launcher · Marketing & creator acquisition · Infrastructure scaling</div>
+      </div>
+      <div class="invest-highlight">
+        <div class="invest-highlight-label">Rollout strategy</div>
+        <div class="invest-highlight-text">LatAm 2026 → Iberian H1 2027 → Global English H2 2027 → Asia Pacific 2028 → Series A 2028</div>
+      </div>
+      <div class="invest-highlight">
+        <div class="invest-highlight-label">Why now</div>
+        <div class="invest-highlight-text">Creator economy is fragmenting. AI enables two-person teams to build platform-grade products. LatAm market is underserved and growing. The window to establish infrastructure-level position is open.</div>
+      </div>
+      <a href="mailto:gabriel@base.gg" class="btn btn-primary btn-large" style="text-align:center; justify-content:center;"><span data-i18n="invest-cta">Request investor deck →</span></a>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- ROADMAP -->
+<section>
+  <div class="section-label" data-i18n="s-roadmap">Roadmap</div>
+  <h2 class="section-title" data-i18n="s-roadmap-title">Where we're<br/><em>going next.</em></h2>
+  <p class="section-subtitle" style="margin-bottom: 48px;">Four phases from seed to global scale.</p>
+
+  <div class="roadmap-timeline">
+    <div class="roadmap-item active">
+      <div class="roadmap-period">Now → Aug 2026</div>
+      <h4>V1 Launch</h4>
+      <div class="roadmap-milestones">
+        <div class="roadmap-milestone">Bunker launcher V1</div>
+        <div class="roadmap-milestone">Funktoon full stack</div>
+        <div class="roadmap-milestone">AI backend layer</div>
+        <div class="roadmap-milestone">Web Summit Rio</div>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-period">2026</div>
+      <h4>LatAm Scale</h4>
+      <div class="roadmap-milestones">
+        <div class="roadmap-milestone">Brazil market domination</div>
+        <div class="roadmap-milestone">AI recommendations live</div>
+        <div class="roadmap-milestone">Campaign assistant</div>
+        <div class="roadmap-milestone">50K+ active creators</div>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-period">H1 2027</div>
+      <h4>Iberian Expansion</h4>
+      <div class="roadmap-milestones">
+        <div class="roadmap-milestone">Portugal & Spain launch</div>
+        <div class="roadmap-milestone">Spanish-language IPs</div>
+        <div class="roadmap-milestone">International IP licensing</div>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-period">H2 2027 → 2028</div>
+      <h4>Global & Series A</h4>
+      <div class="roadmap-milestones">
+        <div class="roadmap-milestone">Global English rollout</div>
+        <div class="roadmap-milestone">IP licensing marketplace</div>
+        <div class="roadmap-milestone">Series A preparation</div>
+        <div class="roadmap-milestone">Series A close 2028</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="cta">
+  <div class="cta-bg"></div>
+  <h2 data-i18n="cta-title">Base.<br/><em>Have your own.</em></h2>
+  <p data-i18n="cta-desc">Join the platform being built to give creators real infrastructure, real tools, and real scale.</p>
+  <div class="cta-actions">
+    <a href="mailto:gabriel@base.gg" class="btn btn-primary btn-large" data-i18n="cta-btn1">Get in touch</a>
+    <a href="https://linkedin.com/in/gabriel-wainer-933865200" target="_blank" class="btn btn-ghost btn-large">LinkedIn →</a>
+  </div>
+  <p>&nbsp;</p>
+  <p class="cta-note" data-i18n="cta-note">Web Summit Rio 2026 · Seed Round Open · R$7M / 10%</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <a class="nav-logo" href="#" style="text-decoration:none;">
+      <div class="nav-logo-mark"><svg width="32" height="32" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="180" height="180" rx="40" fill="#6ABF5F"/><text x="90" y="132" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="112" fill="black">B</text></svg></div>
+      <span class="nav-logo-text">BASE</span>
+    </a>
+    <span class="footer-copy"><span data-i18n="footer-copy">© 2026 BASE. All rights reserved.</span>
+  </div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:gabriel@base.gg">Contact</a>
+    <a href="https://linkedin.com/in/gabriel-wainer-933865200" target="_blank">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+  const pill = document.getElementById('playPill');
+  const pillText = document.getElementById('pillText');
+  const bgVideo = document.getElementById('heroBgVideo');
+  const cover = document.getElementById('heroCover');
+  const heroContent = document.getElementById('heroContent');
+  const nav = document.querySelector('nav');
+
+  // Hide nav and content while video plays, show sound button immediately
+  heroContent.style.opacity = '0';
+  heroContent.style.transform = 'translateY(16px)';
+  heroContent.style.transition = 'opacity 1s ease, transform 1s ease';
+  nav.style.opacity = '0';
+  nav.style.transition = 'opacity 0.8s ease';
+  pill.style.display = 'flex'; // show sound button from start
+
+  let firstPlayDone = false;
+  let scrollLocked = false;
+
+  function lockScroll() {
+    scrollLocked = true;
+    const scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.dataset.scrollY = scrollY;
+  }
+
+  function unlockScroll() {
+    const scrollY = parseInt(document.body.dataset.scrollY || '0');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, scrollY);
+    scrollLocked = false;
+  }
+
+  function revealContent() {
+    if (firstPlayDone) return;
+    firstPlayDone = true;
+
+    // Lock scroll while transitioning
+    lockScroll();
+
+    bgVideo.pause();
+    bgVideo.style.transition = 'opacity 1s ease';
+    bgVideo.style.opacity = '0';
+    cover.style.opacity = '1';
+    cover.style.transition = 'opacity 1s ease';
+
+    setTimeout(() => {
+      nav.style.opacity = '1';
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+      if (pillText) pillText.textContent = 'Watch with sound';
+    }, 400);
+
+    // Unlock scroll after transition completes
+    setTimeout(() => {
+      unlockScroll();
+    }, 1400);
+  }
+
+  if (bgVideo) {
+    bgVideo.addEventListener('canplay', () => {
+      cover.style.opacity = '0';
+      cover.style.transition = 'opacity 1s ease';
+      bgVideo.style.display = 'block';
+    });
+    bgVideo.removeAttribute('loop');
+    bgVideo.addEventListener('ended', revealContent);
+  }
+
+  // Scroll trigger — lock + transition on first scroll
+  window.addEventListener('scroll', () => {
+    if (!firstPlayDone && !scrollLocked && window.scrollY > 40) {
+      revealContent();
+    }
+  }, { passive: true });
+
+  if (pill && bgVideo) {
+    pill.addEventListener('click', () => {
+      if (firstPlayDone) {
+        // Hero estático — rever o vídeo
+        bgVideo.style.opacity = '1';
+        bgVideo.style.transition = 'opacity 0.8s ease';
+        cover.style.opacity = '0';
+        cover.style.transition = 'opacity 0.8s ease';
+        bgVideo.style.display = 'block';
+        bgVideo.currentTime = 0;
+        bgVideo.muted = false;
+        bgVideo.play();
+        nav.style.opacity = '0';
+        heroContent.style.opacity = '0';
+        heroContent.style.transform = 'translateY(16px)';
+        firstPlayDone = false;
+        if (pillText) pillText.textContent = 'Mute';
+        pill.style.display = 'flex';
+      } else {
+        // Vídeo tocando — toggle mute
+        if (bgVideo.muted) {
+          bgVideo.muted = false;
+          if (pillText) pillText.textContent = 'Mute';
+          pill.style.display = 'flex';
+        } else {
+          bgVideo.muted = true;
+          if (pillText) pillText.textContent = 'Ligue o som';
+          pill.style.display = 'flex';
+        }
+      }
+    });
+  }
+
+  const langToggle = document.getElementById('langToggle');
+
+  const T = {
+    en: {
+      'lang-btn': 'PT →',
+      'nav-product': 'Product', 'nav-traction': 'Traction', 'nav-team': 'Team', 'nav-invest': 'Invest',
+      'nav-deck': 'View deck', 'nav-cta': 'Get in touch',
+      'hero-badge': 'AI-Native · Creator Tech · Web Summit Rio 2026',
+      'hero-h1': 'The global <em>Amazon</em><br/>for creators & IPs.',
+      'hero-tagline': 'The AI-Native Infrastructure for IPs and Creators',
+      'hero-cta1': 'Request access', 'hero-cta2': 'Investor deck →',
+      'hero-sound': 'Watch with sound',
+      'stat1-label': 'Registered creators', 'stat1-sub': 'on Funktoon today',
+      'stat2-label': 'Monthly visits', 'stat2-sub': 'organic, no paid acquisition',
+      'stat3-label': 'Content engines', 'stat4-label': 'Post-money valuation', 'stat4-sub': 'Seed round · R$7M / 10%',
+      's-platform': 'Platform',
+      's-platform-title': 'One ecosystem.<br/><em>Every format.</em>',
+      's-platform-sub': 'From a comic crowdfunding campaign to a game sold through the Bunker launcher — BASE connects every step of an IP\'s lifecycle in a single infrastructure.',
+      'loop-create-title': 'Create', 'loop-create-desc': 'Build your universe. Characters, lore, artbooks, comics, game concepts — all managed as structured IP objects.',
+      'loop-match-title': 'Match', 'loop-match-desc': 'AI-powered matching connects creators with collaborators, publishers, investors, and studios based on your IP\'s potential.',
+      'loop-fund-title': 'Fund', 'loop-fund-desc': 'Run crowdfunding campaigns with rewards, stretch goals, add-ons, and community tools built for creators.',
+      'loop-play-title': 'Play', 'loop-play-desc': 'Distribute indie games through Bunker — the dedicated launcher with 15% take rate. Half of Steam, full stack of BASE.',
+      'loop-expand-title': 'Expand', 'loop-expand-desc': 'Every project feeds the IP graph. Comics become games. Games become universes. Universes become franchises.',
+      's-engines': 'Three engines',
+      's-engines-title': 'Built for the<br/><em>creator economy.</em>',
+      's-engines-sub': 'Three engines that make BASE defensible — Match brings the right people together, Ranking drives discovery, Marketplace is where revenue happens.',
+      'bunker-desc': 'A dedicated distribution platform for games. Launcher-based with cloud saves, social features, and the BASE IP graph built in.',
+      'funktoon-desc': 'Self-publishing platform for comics, HQs, artbooks, and illustrated universes. Already live with meaningful traction and thousands of active authors.',
+      'rpg-desc': 'Editorial territory for tabletop RPGs, boardgames, collectibles, and worldbuilders. Campaigns, systems, lore, and a marketplace for physical and digital products.',
+      's-traction': 'Traction',
+      's-traction-title': 'Real product,<br/><em>real numbers.</em>',
+      's-traction-sub': 'BASE isn\'t a pitch deck. The platform is live, the creators are active, and the infrastructure is operating.',
+      's-team': 'Team',
+      's-team-title': 'Built by people<br/><em>who\'ve done it.</em>',
+      's-team-sub': 'Cinema, streaming, publishing, and software engineering — the founding team brings operational experience across every vertical BASE operates in.',
+      'gabriel-bio': 'Executive Director at Downtown Filmes. Founder of Guará studio and Funktoon, co-founder of Aquarius. Comics portfolio includes Sangue Quente, Os Desviantes, Santo, and Pérola. HQMix 2022 Best National Publisher.',
+      'fernando-bio': 'Principal Software Engineer specializing in multi-platform architecture across Web, Mobile, and TV. Leading scalable systems and AI infrastructure for BASE — the full technical stack from Next.js to GCP Cloud SQL.',
+      'pedro-bio': 'Film producer and co-founder of Funktoon and BASE. Brings production experience and creative IP development expertise to the platform\'s content strategy and creator acquisition.',
+      's-invest': 'Seed Round',
+      's-invest-title': 'A platform at<br/><em>inflection point.</em>',
+      's-invest-sub': 'The infrastructure is built. The creators are here. The market is ready. We\'re raising to accelerate distribution, AI features, and global expansion.',
+      'invest-raising-label': 'Raising', 'invest-valuation-label': 'Post-money valuation',
+      'invest-revenue-label': 'Revenue projections (2028)', 'invest-launch-label': 'V1 Launch',
+      'invest-launch-sub': 'All three engines simultaneously',
+      'invest-funds-label': 'Use of funds',
+      'invest-funds-text': 'AI feature layer (recommendations, campaign assistant, viability scoring) · Bunker desktop launcher · Marketing & creator acquisition · Infrastructure scaling',
+      'invest-rollout-label': 'Rollout strategy',
+      'invest-rollout-text': 'LatAm 2026 → Iberian H1 2027 → Global English H2 2027 → Asia Pacific 2028 → Series A 2028',
+      'invest-why-label': 'Why now',
+      'invest-why-text': 'Creator economy is fragmenting. AI enables two-person teams to build platform-grade products. LatAm market is underserved and growing. The window to establish infrastructure-level position is open.',
+      'invest-cta': 'Request investor deck →',
+      's-roadmap': 'Roadmap',
+      's-roadmap-title': 'Where we\'re<br/><em>going next.</em>',
+      's-roadmap-sub': 'Four phases from seed to global scale.',
+      'road1-period': 'Now → Aug 2026', 'road1-title': 'V1 Launch',
+      'road1-m1': 'Bunker launcher V1', 'road1-m2': 'Funktoon full stack', 'road1-m3': 'AI backend layer', 'road1-m4': 'Web Summit Rio',
+      'road2-period': '2026', 'road2-title': 'LatAm Scale',
+      'road2-m1': 'Brazil market domination', 'road2-m2': 'AI recommendations live', 'road2-m3': 'Campaign assistant', 'road2-m4': '50K+ active creators',
+      'road3-period': 'H1 2027', 'road3-title': 'Iberian Expansion',
+      'road3-m1': 'Portugal & Spain launch', 'road3-m2': 'Spanish-language IPs', 'road3-m3': 'International IP licensing',
+      'road4-period': 'H2 2027 → 2028', 'road4-title': 'Global & Series A',
+      'road4-m1': 'Global English rollout', 'road4-m2': 'IP licensing marketplace', 'road4-m3': 'Series A preparation', 'road4-m4': 'Series A close 2028',
+      'cta-title': 'Base.<br/><em>Have your own.</em>',
+      'cta-desc': 'Join the platform being built to give creators real infrastructure, real tools, and real scale.',
+      'cta-btn1': 'Get in touch',
+      'cta-note': 'Web Summit Rio 2026 · Seed Round Open · R$7M / 10%',
+      'footer-copy': '© 2026 BASE. All rights reserved.',
+    },
+    pt: {
+      'lang-btn': 'EN →',
+      'nav-product': 'Produto', 'nav-traction': 'Tração', 'nav-team': 'Time', 'nav-invest': 'Investir',
+      'nav-deck': 'Ver deck', 'nav-cta': 'Falar conosco',
+      'hero-badge': 'AI-Native · Creator Tech · Web Summit Rio 2026',
+      'hero-h1': 'A <em>Amazon global</em><br/>para criadores e IPs.',
+      'hero-tagline': 'A Infraestrutura AI-Native para IPs e Criadores',
+      'hero-cta1': 'Solicitar acesso', 'hero-cta2': 'Deck do investidor →',
+      'hero-sound': 'Assistir com som',
+      'stat1-label': 'Criadores cadastrados', 'stat1-sub': 'no Funktoon hoje',
+      'stat2-label': 'Visitas mensais', 'stat2-sub': 'orgânico, sem mídia paga',
+      'stat3-label': 'Motores de conteúdo', 'stat4-label': 'Valuation pós-investimento', 'stat4-sub': 'Seed · R$7M / 10%',
+      's-platform': 'Plataforma',
+      's-platform-title': 'Um ecossistema.<br/><em>Todos os formatos.</em>',
+      's-platform-sub': 'De uma campanha de crowdfunding de quadrinhos a um jogo vendido pelo launcher Bunker — a BASE conecta cada etapa do ciclo de vida de um IP em uma única infraestrutura.',
+      'loop-create-title': 'Criar', 'loop-create-desc': 'Construa seu universo. Personagens, lore, artbooks, quadrinhos, conceitos de games — tudo gerenciado como objetos de IP estruturados.',
+      'loop-match-title': 'Match', 'loop-match-desc': 'O sistema de match com IA conecta criadores a colaboradores, publishers, investidores e estúdios com base no potencial do seu IP.',
+      'loop-fund-title': 'Financiar', 'loop-fund-desc': 'Rode campanhas de crowdfunding com recompensas, stretch goals, add-ons e ferramentas de comunidade feitas para criadores.',
+      'loop-play-title': 'Jogar', 'loop-play-desc': 'Distribua games indie pelo Bunker — o launcher dedicado com taxa de 15%. Metade do Steam, stack completo da BASE.',
+      'loop-expand-title': 'Expandir', 'loop-expand-desc': 'Cada projeto alimenta o grafo de IPs. Quadrinhos viram games. Games viram universos. Universos viram franquias.',
+      's-engines': 'Três motores',
+      's-engines-title': 'Feito para a<br/><em>economia criativa.</em>',
+      's-engines-sub': 'Três motores que tornam a BASE defensável — Match conecta as pessoas certas, Ranking gera descoberta, Marketplace é onde a receita acontece.',
+      'bunker-desc': 'Conecte seu IP às pessoas certas. O match com IA da BASE encontra colaboradores, estúdios, investidores e publishers com base no encaixe criativo — não apenas em tags de habilidade.',
+      'funktoon-desc': 'Saiba o que está em movimento. O Pulse rastreia tração de criadores, IPs, campanhas e games em tempo real — tornando a própria BASE o motor de descoberta, sem dependência de algoritmo externo.',
+      'rpg-desc': 'Um stack de comércio para cada formato. Crowdfunding, loja digital, distribuição de games, colecionáveis, add-ons e assinaturas — tudo em uma única camada financeira com trilhos multi-moeda.',
+      's-traction': 'Tração',
+      's-traction-title': 'Produto real,<br/><em>números reais.</em>',
+      's-traction-sub': 'A BASE não é um pitch deck. A plataforma está no ar, os criadores estão ativos e a infraestrutura está operando.',
+      's-team': 'Time',
+      's-team-title': 'Feito por quem<br/><em>já fez antes.</em>',
+      's-team-sub': 'Cinema, streaming, publicação e engenharia de software — o time fundador traz experiência operacional em todas as verticais em que a BASE atua.',
+      'gabriel-bio': 'Diretor Executivo na Downtown Filmes. Fundador do estúdio Guará e do Funktoon, co-fundador da Aquarius. Portfólio de quadrinhos inclui Sangue Quente, Os Desviantes, Santo e Pérola. Melhor Editora Nacional HQMix 2022.',
+      'fernando-bio': 'Engenheiro de Software Principal especializado em arquitetura multiplataforma para Web, Mobile e TV. Lidera sistemas escaláveis e infraestrutura de IA da BASE — do Next.js ao GCP Cloud SQL.',
+      'pedro-bio': 'Produtor de cinema e co-fundador do Funktoon e da BASE. Traz experiência em produção e desenvolvimento criativo de IP para a estratégia de conteúdo e aquisição de criadores da plataforma.',
+      's-invest': 'Rodada Seed',
+      's-invest-title': 'Uma plataforma em<br/><em>ponto de inflexão.</em>',
+      's-invest-sub': 'A infraestrutura está construída. Os criadores estão aqui. O mercado está pronto. Estamos captando para acelerar distribuição, funcionalidades de IA e expansão global.',
+      'invest-raising-label': 'Captação', 'invest-valuation-label': 'Valuation pós-investimento',
+      'invest-revenue-label': 'Projeção de receita (2028)', 'invest-launch-label': 'Lançamento V1',
+      'invest-launch-sub': 'Os três motores simultaneamente',
+      'invest-funds-label': 'Uso dos recursos',
+      'invest-funds-text': 'Camada de IA (recomendações, assistente de campanha, scoring de viabilidade) · Launcher desktop Bunker · Marketing e aquisição de criadores · Escalonamento de infraestrutura',
+      'invest-rollout-label': 'Estratégia de expansão',
+      'invest-rollout-text': 'LatAm 2026 → Ibérico H1 2027 → Inglês Global H2 2027 → Ásia-Pacífico 2028 → Série A 2028',
+      'invest-why-label': 'Por que agora',
+      'invest-why-text': 'A economia criativa está se fragmentando. A IA permite que times de duas pessoas construam produtos de nível de plataforma. O mercado LatAm é subatendido e crescendo. A janela para ocupar posição de infraestrutura está aberta.',
+      'invest-cta': 'Solicitar deck do investidor →',
+      's-roadmap': 'Roadmap',
+      's-roadmap-title': 'Para onde<br/><em>estamos indo.</em>',
+      's-roadmap-sub': 'Quatro fases do seed à escala global.',
+      'road1-period': 'Agora → Ago 2026', 'road1-title': 'Lançamento V1',
+      'road1-m1': 'Launcher Bunker V1', 'road1-m2': 'Funktoon stack completo', 'road1-m3': 'Camada de IA backend', 'road1-m4': 'Web Summit Rio',
+      'road2-period': '2026', 'road2-title': 'Escala LatAm',
+      'road2-m1': 'Domínio do mercado brasileiro', 'road2-m2': 'Recomendações IA ao vivo', 'road2-m3': 'Assistente de campanha', 'road2-m4': '50K+ criadores ativos',
+      'road3-period': 'H1 2027', 'road3-title': 'Expansão Ibérica',
+      'road3-m1': 'Lançamento Portugal & Espanha', 'road3-m2': 'IPs em espanhol', 'road3-m3': 'Licenciamento internacional de IP',
+      'road4-period': 'H2 2027 → 2028', 'road4-title': 'Global & Série A',
+      'road4-m1': 'Expansão Inglês Global', 'road4-m2': 'Marketplace de licenciamento de IP', 'road4-m3': 'Preparação Série A', 'road4-m4': 'Fechamento Série A 2028',
+      'cta-title': 'BASE.<br/><em>Tenha a sua.</em>',
+      'cta-desc': 'Crie, financie, publique e escale. Tudo em um lugar. Tudo seu.',
+      'cta-btn1': 'Falar conosco',
+      'cta-note': 'Web Summit Rio 2026 · Rodada Seed Aberta · R$7M / 10%',
+      'footer-copy': '© 2026 BASE. Todos os direitos reservados.',
+    }
+  };
+
+  let currentLang = 'en';
+
+  function applyLang(lang) {
+    const t = T[lang];
+    langToggle.textContent = t['lang-btn'];
+
+    // hero special cases
+    document.querySelector('.hero h1').innerHTML = t['hero-h1'];
+    document.querySelector('.hero-tagline').textContent = t['hero-tagline'];
+    document.querySelector('.hero-badge').innerHTML = `<div class="hero-badge-dot"></div>${t['hero-badge']}`;
+
+    // section subtitles (not data-i18n, direct selectors)
+    const subs = document.querySelectorAll('.section-subtitle');
+    const subKeys = ['s-platform-sub','s-engines-sub','s-traction-sub','s-team-sub','s-invest-sub'];
+    subs.forEach((el, i) => { if (subKeys[i]) el.innerHTML = t[subKeys[i]] || el.innerHTML; });
+
+    // roadmap subtitle
+    const roadSub = document.querySelector('.roadmap-timeline')?.previousElementSibling;
+    if (roadSub) roadSub.textContent = t['s-roadmap-sub'];
+
+    // loop items
+    const loopItems = document.querySelectorAll('.loop-item');
+    const loopKeys = ['create','match','fund','play','expand'];
+    loopItems.forEach((item, i) => {
+      const k = loopKeys[i];
+      if (!k) return;
+      const h3 = item.querySelector('h3');
+      const p = item.querySelector('p');
+      if (h3) h3.textContent = t[`loop-${k}-title`];
+      if (p) p.textContent = t[`loop-${k}-desc`];
+    });
+
+    // engine cards descriptions
+    const engineDescs = document.querySelectorAll('.engine-card > p');
+    const engineKeys = ['bunker-desc','funktoon-desc','rpg-desc'];
+    engineDescs.forEach((el, i) => { if (engineKeys[i]) el.textContent = t[engineKeys[i]]; });
+
+    // team bios
+    const bios = document.querySelectorAll('.team-bio');
+    const bioKeys = ['gabriel-bio','fernando-bio','pedro-bio'];
+    bios.forEach((el, i) => { if (bioKeys[i]) el.textContent = t[bioKeys[i]]; });
+
+    // invest highlights
+    const highlights = document.querySelectorAll('.invest-highlight');
+    const hlLabelKeys = ['invest-funds-label','invest-rollout-label','invest-why-label'];
+    const hlTextKeys  = ['invest-funds-text','invest-rollout-text','invest-why-text'];
+    highlights.forEach((hl, i) => {
+      const lbl = hl.querySelector('.invest-highlight-label');
+      const txt = hl.querySelector('.invest-highlight-text');
+      if (lbl && hlLabelKeys[i]) lbl.textContent = t[hlLabelKeys[i]];
+      if (txt && hlTextKeys[i])  txt.textContent  = t[hlTextKeys[i]];
+    });
+
+    // invest metric labels
+    const mLabels = document.querySelectorAll('.invest-metric-label');
+    const mLabelKeys = ['invest-raising-label','invest-valuation-label','invest-revenue-label','invest-launch-label'];
+    mLabels.forEach((el, i) => { if (mLabelKeys[i]) el.textContent = t[mLabelKeys[i]]; });
+
+    // invest launch sub
+    const mSubs = document.querySelectorAll('.invest-metric-sub');
+    if (mSubs[3]) mSubs[3].textContent = t['invest-launch-sub'];
+
+    // roadmap items
+    const rItems = document.querySelectorAll('.roadmap-item');
+    for (let i = 1; i <= 4; i++) {
+      const item = rItems[i-1];
+      if (!item) continue;
+      const period = item.querySelector('.roadmap-period');
+      const title  = item.querySelector('h4');
+      const milestones = item.querySelectorAll('.roadmap-milestone');
+      if (period) period.textContent = t[`road${i}-period`];
+      if (title)  title.textContent  = t[`road${i}-title`];
+      milestones.forEach((m, j) => { const v = t[`road${i}-m${j+1}`]; if (v) m.textContent = v; });
+    }
+
+    // all data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) {
+        if (key.endsWith('-title') || key === 'cta-title') el.innerHTML = t[key];
+        else el.textContent = t[key];
+      }
+    });
+  }
+
+  langToggle.addEventListener('click', () => {
+    currentLang = currentLang === 'en' ? 'pt' : 'en';
+    applyLang(currentLang);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.loop-item, .engine-card, .traction-card, .team-card, .roadmap-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
