@@ -1171,14 +1171,14 @@
     }
     .nav-links { display: none; }
     .nav-cta { gap: 6px; }
-    .btn-ghost { display: none; } /* hide View deck on mobile */
+    .btn-ghost { display: none; }
     .lang-btn { padding: 5px 8px; font-size: 11px; }
     .btn-primary { padding: 8px 14px; font-size: 13px; }
     .nav-logo-text { font-size: 15px; }
 
     /* HERO */
     .hero-content {
-      padding: 0 20px 56px;
+      padding: 0 20px 24px; /* ← era 56px, agora 24px para descer o texto */
     }
     .hero-badge {
       font-size: 9px;
@@ -1218,7 +1218,7 @@
       height: 100%;
     }
     .hero-cover {
-      object-position: 60% center;
+      object-position: 60% 30%; /* ← era "60% center", agora puxa o enquadramento levemente para baixo */
     }
 
     /* PLAY PILL */
@@ -1970,21 +1970,17 @@
     const t = T[lang];
     langToggle.textContent = t['lang-btn'];
 
-    // hero special cases
     document.querySelector('.hero h1').innerHTML = t['hero-h1'];
     document.querySelector('.hero-tagline').textContent = t['hero-tagline'];
     document.querySelector('.hero-badge').innerHTML = `<div class="hero-badge-dot"></div>${t['hero-badge']}`;
 
-    // section subtitles (not data-i18n, direct selectors)
     const subs = document.querySelectorAll('.section-subtitle');
     const subKeys = ['s-platform-sub','s-engines-sub','s-traction-sub','s-team-sub','s-invest-sub'];
     subs.forEach((el, i) => { if (subKeys[i]) el.innerHTML = t[subKeys[i]] || el.innerHTML; });
 
-    // roadmap subtitle
     const roadSub = document.querySelector('.roadmap-timeline')?.previousElementSibling;
     if (roadSub) roadSub.textContent = t['s-roadmap-sub'];
 
-    // loop items
     const loopItems = document.querySelectorAll('.loop-item');
     const loopKeys = ['create','match','fund','play','expand'];
     loopItems.forEach((item, i) => {
@@ -1996,17 +1992,14 @@
       if (p) p.textContent = t[`loop-${k}-desc`];
     });
 
-    // engine cards descriptions
     const engineDescs = document.querySelectorAll('.engine-card > p');
     const engineKeys = ['bunker-desc','funktoon-desc','rpg-desc'];
     engineDescs.forEach((el, i) => { if (engineKeys[i]) el.textContent = t[engineKeys[i]]; });
 
-    // team bios
     const bios = document.querySelectorAll('.team-bio');
     const bioKeys = ['gabriel-bio','fernando-bio','pedro-bio'];
     bios.forEach((el, i) => { if (bioKeys[i]) el.textContent = t[bioKeys[i]]; });
 
-    // invest highlights
     const highlights = document.querySelectorAll('.invest-highlight');
     const hlLabelKeys = ['invest-funds-label','invest-rollout-label','invest-why-label'];
     const hlTextKeys  = ['invest-funds-text','invest-rollout-text','invest-why-text'];
@@ -2017,16 +2010,13 @@
       if (txt && hlTextKeys[i])  txt.textContent  = t[hlTextKeys[i]];
     });
 
-    // invest metric labels
     const mLabels = document.querySelectorAll('.invest-metric-label');
     const mLabelKeys = ['invest-raising-label','invest-valuation-label','invest-revenue-label','invest-launch-label'];
     mLabels.forEach((el, i) => { if (mLabelKeys[i]) el.textContent = t[mLabelKeys[i]]; });
 
-    // invest launch sub
     const mSubs = document.querySelectorAll('.invest-metric-sub');
     if (mSubs[3]) mSubs[3].textContent = t['invest-launch-sub'];
 
-    // roadmap items
     const rItems = document.querySelectorAll('.roadmap-item');
     for (let i = 1; i <= 4; i++) {
       const item = rItems[i-1];
@@ -2039,7 +2029,6 @@
       milestones.forEach((m, j) => { const v = t[`road${i}-m${j+1}`]; if (v) m.textContent = v; });
     }
 
-    // all data-i18n elements
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (t[key] !== undefined) {
