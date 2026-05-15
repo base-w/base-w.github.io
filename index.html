@@ -1195,29 +1195,39 @@
     .nav-logo-text { font-size: 15px; }
 
     /* HERO */
+    /* Gradiente mais escuro na metade inferior — rosto visível no topo, texto na zona preta */
+    .hero-overlay {
+      background: linear-gradient(to top,
+        rgba(8,8,8,1) 0%,
+        rgba(8,8,8,1) 50%,
+        rgba(8,8,8,0.72) 61%,
+        rgba(8,8,8,0.08) 74%,
+        rgba(8,8,8,0.35) 100%
+      );
+    }
     .hero-content {
-      padding: 0 20px 24px; /* ← era 56px, agora 24px para descer o texto */
+      padding: 0 20px 76px; /* espaço extra para o pill ficar abaixo do botão */
     }
     .hero-badge {
       font-size: 9px;
       padding: 5px 12px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       white-space: normal;
       text-align: center;
     }
     .hero h1 {
       font-size: 36px;
       line-height: 1.05;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .hero-tagline {
       font-size: 13px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .hero-actions {
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 32px;
+      margin-bottom: 0;
       align-items: flex-start;
     }
     .btn-large {
@@ -1226,8 +1236,7 @@
       width: 100%;
       justify-content: center;
     }
-    .hero-tagwords { gap: 6px; }
-    .hero-tagword { font-size: 10px; }
+    .hero-tagwords { display: none; }
 
     /* VIDEO — vertical crop for portrait */
     .hero-video-bg {
@@ -1236,18 +1245,21 @@
       height: 100%;
     }
     .hero-cover {
-      object-position: 65% 15%; /* rosto centralizado, parte inferior visível acima do texto */
+      object-position: 50% 3%; /* rosto no topo, sem sobrepor o texto */
     }
 
-    /* PLAY PILL */
+    /* PLAY PILL — largura total, centralizado, ancorado na base do hero */
     .hero-play-pill {
-      right: 16px;
-      bottom: 56px;
-      padding: 8px 14px 8px 10px;
-      font-size: 11px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      width: auto;
+      justify-content: center;
+      padding: 10px 18px 10px 12px;
+      font-size: 13px;
     }
     .hero-play-pill-icon {
-      width: 24px; height: 24px;
+      width: 26px; height: 26px;
     }
 
     /* STATS */
