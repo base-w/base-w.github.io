@@ -1782,23 +1782,8 @@
 
     let firstPlayDone = false;
     let scrollLocked = false;
-    let audioCtxInitialized = false;
-
     function unmuteWithBluetooth(video) {
-        if (!audioCtxInitialized) {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) {
-                    const audioCtx = new AudioContext();
-                    const source = audioCtx.createMediaElementSource(video);
-                    source.connect(audioCtx.destination);
-                    audioCtx.resume();
-                }
-                audioCtxInitialized = true;
-            } catch (e) {
-                // fallback silencioso — unmute ainda funciona sem Web Audio API
-            }
-        }
+        video.volume = 1;
         video.muted = false;
     }
 
