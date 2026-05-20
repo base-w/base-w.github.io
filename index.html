@@ -1783,6 +1783,7 @@
     let firstPlayDone = false;
     let scrollLocked = false;
     function unmuteWithBluetooth(video) {
+        video.removeAttribute('muted');
         video.volume = 1;
         video.muted = false;
     }
